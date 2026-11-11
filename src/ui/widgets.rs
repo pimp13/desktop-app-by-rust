@@ -29,17 +29,17 @@ pub fn labeled_text(
     value: &mut String,
     password: bool,
 ) -> Response {
-    ui.add_space(4.0);
+    ui.add_space(2.0);
     ui.with_layout(Layout::top_down(Align::Max).with_cross_justify(true), |ui| {
-        ui.label(fa_rich(label).size(13.0).color(Colors::TEXT_MUTED));
+        ui.label(fa_rich(label).size(12.5).color(Colors::TEXT_MUTED));
     });
-    ui.add_space(4.0);
+    ui.add_space(2.0);
 
     let mut edit = egui::TextEdit::singleline(value)
         .id_source(id)
         .hint_text(fa_rich(hint).color(Colors::TEXT_DIM))
         .desired_width(f32::INFINITY)
-        .margin(Margin::symmetric(14, 12))
+        .margin(Margin::symmetric(12, 8))
         .horizontal_align(Align::Max)
         .frame(false);
 
@@ -50,7 +50,7 @@ pub fn labeled_text(
     Frame::new()
         .fill(Colors::INPUT_BG)
         .stroke(Stroke::new(1.0_f32, Colors::BORDER))
-        .corner_radius(CornerRadius::same(10))
+        .corner_radius(CornerRadius::same(8))
         .inner_margin(Margin::ZERO)
         .show(ui, |ui| ui.add(edit))
         .inner
@@ -71,8 +71,8 @@ pub fn primary_button(ui: &mut Ui, label: &str, enabled: bool) -> Response {
 
     let mut button = egui::Button::new(text)
         .fill(fill)
-        .corner_radius(CornerRadius::same(10))
-        .min_size(Vec2::new(ui.available_width(), 44.0));
+        .corner_radius(CornerRadius::same(8))
+        .min_size(Vec2::new(ui.available_width(), 38.0));
 
     if enabled {
         button = button.stroke(Stroke::NONE);
@@ -106,14 +106,14 @@ pub fn error_banner(ui: &mut Ui, message: &str) {
     Frame::new()
         .fill(Colors::ERROR_BG)
         .stroke(Stroke::new(1.0_f32, Colors::ERROR.gamma_multiply(0.5)))
-        .corner_radius(CornerRadius::same(10))
-        .inner_margin(Margin::symmetric(14, 12))
+        .corner_radius(CornerRadius::same(8))
+        .inner_margin(Margin::symmetric(12, 8))
         .show(ui, |ui| {
             ui.with_layout(Layout::top_down(Align::Max).with_cross_justify(true), |ui| {
-                ui.label(fa_rich(message).color(Colors::ERROR).size(13.5));
+                ui.label(fa_rich(message).color(Colors::ERROR).size(12.5));
             });
         });
-    ui.add_space(8.0);
+    ui.add_space(4.0);
 }
 
 pub fn success_banner(ui: &mut Ui, message: &str) {
@@ -123,14 +123,14 @@ pub fn success_banner(ui: &mut Ui, message: &str) {
     Frame::new()
         .fill(Color32::from_rgb(22, 42, 32))
         .stroke(Stroke::new(1.0_f32, Colors::SUCCESS.gamma_multiply(0.45)))
-        .corner_radius(CornerRadius::same(10))
-        .inner_margin(Margin::symmetric(14, 12))
+        .corner_radius(CornerRadius::same(8))
+        .inner_margin(Margin::symmetric(12, 8))
         .show(ui, |ui| {
             ui.with_layout(Layout::top_down(Align::Max).with_cross_justify(true), |ui| {
-                ui.label(fa_rich(message).color(Colors::SUCCESS).size(13.5));
+                ui.label(fa_rich(message).color(Colors::SUCCESS).size(12.5));
             });
         });
-    ui.add_space(8.0);
+    ui.add_space(4.0);
 }
 
 pub fn strength_bar(ui: &mut Ui, strength: PasswordStrength) {
@@ -161,28 +161,37 @@ pub fn strength_bar(ui: &mut Ui, strength: PasswordStrength) {
 
 pub fn auth_shell(ui: &mut Ui, form_width: f32, add_contents: impl FnOnce(&mut Ui)) {
     let available = ui.available_size();
-    let side_w = (available.x * 0.42).clamp(260.0, 420.0);
+    let side_w = (available.x * 0.38).clamp(220.0, 360.0);
 
-    // RTL: form on the right, brand panel on the left visually... 
-    // For Persian apps, brand often sits on the right. Use right_to_left so first child is on the right.
     ui.allocate_ui_with_layout(available, Layout::right_to_left(Align::Center), |ui| {
-        // Form panel (appears on the right)
+        // Form panel (right side in RTL)
         ui.allocate_ui_with_layout(
             Vec2::new(available.x - side_w, available.y),
             Layout::top_down(Align::Center),
             |ui| {
-                Frame::new().fill(Colors::BG).show(ui, |ui| {
-                    ui.set_min_size(Vec2::new(available.x - side_w, available.y));
-                    ui.vertical_centered(|ui| {
-                        ui.add_space((available.y - 460.0).max(40.0) * 0.35);
-                        ui.set_max_width(form_width);
-                        add_contents(ui);
+                Frame::new()
+                    .fill(Colors::BG)
+                    .inner_margin(Margin::symmetric(16, 12))
+                    .show(ui, |ui| {
+                        ui.set_min_size(Vec2::new(
+                            (available.x - side_w).max(0.0),
+                            available.y,
+                        ));
+                        let max_h = (available.y - 24.0).max(120.0);
+                        egui::ScrollArea::vertical()
+                            .max_height(max_h)
+                            .auto_shrink([false, true])
+                            .show(ui, |ui| {
+                                ui.vertical_centered(|ui| {
+                                    ui.set_max_width(form_width.min(ui.available_width()));
+                                    add_contents(ui);
+                                });
+                            });
                     });
-                });
             },
         );
 
-        // Brand panel (appears on the left in RTL layout = trailing side)
+        // Brand panel
         ui.allocate_ui_with_layout(
             Vec2::new(side_w, available.y),
             Layout::top_down(Align::Center),
@@ -190,22 +199,22 @@ pub fn auth_shell(ui: &mut Ui, form_width: f32, add_contents: impl FnOnce(&mut U
                 Frame::new().fill(Colors::SIDEBAR).show(ui, |ui| {
                     ui.set_min_size(Vec2::new(side_w, available.y));
                     ui.vertical_centered(|ui| {
-                        ui.add_space(available.y * 0.22);
+                        ui.add_space((available.y * 0.16).min(80.0));
                         brand_mark(ui, true);
-                        ui.add_space(18.0);
+                        ui.add_space(14.0);
                         ui.label(
                             RichText::new("SecureDesk")
-                                .size(30.0)
+                                .size(26.0)
                                 .strong()
                                 .color(Colors::TEXT),
                         );
-                        ui.add_space(8.0);
+                        ui.add_space(6.0);
                         ui.label(
                             fa_rich("احراز هویت مدرن برای دسکتاپ")
-                                .size(14.0)
+                                .size(13.0)
                                 .color(Colors::TEXT_MUTED),
                         );
-                        ui.add_space(28.0);
+                        ui.add_space(20.0);
 
                         rtl_column(ui, |ui| {
                             for line in [
@@ -214,10 +223,10 @@ pub fn auth_shell(ui: &mut Ui, form_width: f32, add_contents: impl FnOnce(&mut U
                                 "نشست امن با انقضای زمانی",
                                 "پایگاه‌داده محلی SQLite",
                             ] {
-                                ui.add_space(6.0);
+                                ui.add_space(4.0);
                                 ui.label(
                                     fa_rich(format!("• {line}"))
-                                        .size(13.0)
+                                        .size(12.5)
                                         .color(Colors::TEXT_DIM),
                                 );
                             }
@@ -233,10 +242,11 @@ pub fn card(ui: &mut Ui, add_contents: impl FnOnce(&mut Ui)) {
     Frame::new()
         .fill(Colors::PANEL)
         .stroke(Stroke::new(1.0_f32, Colors::BORDER))
-        .corner_radius(CornerRadius::same(16))
-        .inner_margin(Margin::symmetric(28, 26))
+        .corner_radius(CornerRadius::same(14))
+        .inner_margin(Margin::symmetric(20, 16))
         .show(ui, |ui| {
             ui.set_min_width(ui.available_width());
+            ui.spacing_mut().item_spacing.y = 6.0;
             ui.with_layout(Layout::top_down(Align::Max).with_cross_justify(true), |ui| {
                 add_contents(ui);
             });

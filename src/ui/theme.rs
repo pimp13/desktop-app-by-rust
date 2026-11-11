@@ -48,8 +48,8 @@ pub fn apply_theme(ctx: &egui::Context) {
     ]
     .into();
 
-    style.spacing.item_spacing = egui::vec2(10.0, 10.0);
-    style.spacing.button_padding = egui::vec2(16.0, 10.0);
+    style.spacing.item_spacing = egui::vec2(8.0, 6.0);
+    style.spacing.button_padding = egui::vec2(14.0, 8.0);
     style.spacing.window_margin = egui::Margin::same(0);
     style.visuals = dark_visuals();
 

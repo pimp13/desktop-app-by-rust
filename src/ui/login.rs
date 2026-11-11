@@ -12,17 +12,16 @@ pub fn show_login(app: &mut AuthApp, ui: &mut Ui) {
         card(ui, |ui| {
             ui.label(
                 fa_rich("ورود به حساب")
-                    .size(24.0)
+                    .size(20.0)
                     .strong()
                     .color(Colors::TEXT),
             );
-            ui.add_space(4.0);
             ui.label(
                 fa_rich("نام کاربری یا ایمیل و رمز عبور خود را وارد کنید")
-                    .size(13.0)
+                    .size(12.5)
                     .color(Colors::TEXT_MUTED),
             );
-            ui.add_space(16.0);
+            ui.add_space(6.0);
 
             success_banner(ui, &app.info_message);
             error_banner(ui, &app.error_message);
@@ -49,17 +48,17 @@ pub fn show_login(app: &mut AuthApp, ui: &mut Ui) {
             .lost_focus()
                 && ui.input(|i| i.key_pressed(egui::Key::Enter));
 
-            ui.add_space(8.0);
+            ui.add_space(4.0);
             rtl_row(ui, |ui| {
                 ui.checkbox(
                     &mut app.remember_me,
                     fa_rich("مرا به خاطر بسپار")
-                        .size(13.0)
+                        .size(12.5)
                         .color(Colors::TEXT_MUTED),
                 );
             });
 
-            ui.add_space(14.0);
+            ui.add_space(8.0);
             let can_submit =
                 !app.login_identifier.trim().is_empty() && !app.login_password.is_empty();
 
@@ -69,7 +68,7 @@ pub fn show_login(app: &mut AuthApp, ui: &mut Ui) {
                 app.submit_login();
             }
 
-            ui.add_space(14.0);
+            ui.add_space(6.0);
             rtl_row(ui, |ui| {
                 if ghost_button(ui, "ثبت‌نام").clicked() {
                     app.clear_messages();

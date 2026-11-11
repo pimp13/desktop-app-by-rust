@@ -13,36 +13,39 @@ pub fn show_register(app: &mut AuthApp, ui: &mut Ui) {
         card(ui, |ui| {
             ui.label(
                 fa_rich("ساخت حساب جدید")
-                    .size(24.0)
+                    .size(20.0)
                     .strong()
                     .color(Colors::TEXT),
             );
-            ui.add_space(4.0);
             ui.label(
                 fa_rich("اطلاعات خود را وارد کنید تا حساب امن بسازید")
-                    .size(13.0)
+                    .size(12.5)
                     .color(Colors::TEXT_MUTED),
             );
-            ui.add_space(12.0);
+            ui.add_space(4.0);
 
             error_banner(ui, &app.error_message);
 
-            labeled_text(
-                ui,
-                "reg_display",
-                "نام نمایشی",
-                "مثلاً پویا",
-                &mut app.register_display_name,
-                false,
-            );
-            labeled_text(
-                ui,
-                "reg_user",
-                "نام کاربری",
-                "pouya_dev",
-                &mut app.register_username,
-                false,
-            );
+            // Two compact columns to reduce total card height
+            ui.columns(2, |cols| {
+                labeled_text(
+                    &mut cols[1],
+                    "reg_display",
+                    "نام نمایشی",
+                    "مثلاً پویا",
+                    &mut app.register_display_name,
+                    false,
+                );
+                labeled_text(
+                    &mut cols[0],
+                    "reg_user",
+                    "نام کاربری",
+                    "pouya_dev",
+                    &mut app.register_username,
+                    false,
+                );
+            });
+
             labeled_text(
                 ui,
                 "reg_email",
@@ -61,7 +64,7 @@ pub fn show_register(app: &mut AuthApp, ui: &mut Ui) {
             );
 
             if !app.register_password.is_empty() {
-                ui.add_space(6.0);
+                ui.add_space(2.0);
                 strength_bar(ui, password_strength(&app.register_password));
             }
 
@@ -74,7 +77,7 @@ pub fn show_register(app: &mut AuthApp, ui: &mut Ui) {
                 true,
             );
 
-            ui.add_space(14.0);
+            ui.add_space(8.0);
             let can_submit = !app.register_username.trim().is_empty()
                 && !app.register_email.trim().is_empty()
                 && !app.register_display_name.trim().is_empty()
@@ -85,7 +88,7 @@ pub fn show_register(app: &mut AuthApp, ui: &mut Ui) {
                 app.submit_register();
             }
 
-            ui.add_space(12.0);
+            ui.add_space(6.0);
             rtl_row(ui, |ui| {
                 if ghost_button(ui, "ورود").clicked() {
                     app.clear_messages();
@@ -93,7 +96,7 @@ pub fn show_register(app: &mut AuthApp, ui: &mut Ui) {
                 }
                 ui.label(
                     fa_rich("قبلاً ثبت‌نام کرده‌اید؟")
-                        .size(13.0)
+                        .size(12.5)
                         .color(Colors::TEXT_MUTED),
                 );
             });
