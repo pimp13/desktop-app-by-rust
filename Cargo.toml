@@ -1,0 +1,28 @@
+[package]
+name = "first-app"
+version = "0.1.0"
+edition = "2024"
+description = "Professional desktop authentication app"
+authors = ["Pouya"]
+
+[dependencies]
+eframe = { version = "0.31", default-features = true, features = ["default_fonts", "glow"] }
+egui = "0.31"
+rusqlite = { version = "0.32", features = ["bundled"] }
+argon2 = "0.5"
+password-hash = "0.5"
+rand = "0.8"
+uuid = { version = "1", features = ["v4", "serde"] }
+chrono = { version = "0.4", features = ["serde"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+directories = "5"
+thiserror = "2"
+zeroize = { version = "1", features = ["derive"] }
+regex = "1"
+fa-shaper = "0.1"
+
+[profile.release]
+lto = true
+codegen-units = 1
+strip = true
